@@ -28,27 +28,27 @@ function SelectItem()
     for itemName, itemData in pairs(Config.Items) do
         cumulative = cumulative + itemData.probability
         if rnd <= cumulative then
-            return itemName
+            return itemName, itemData.amount or 1
         end
     end
-    return nil
+    return nil, 0
 end
 
 RegisterServerEvent('hw_scrapyard:collectScrap')
 AddEventHandler('hw_scrapyard:collectScrap', function()
     local xPlayer = ESX.GetPlayerFromId(source)
-    local selectedItem = SelectItem()
+    local selectedItem, amount = SelectItem()
     if Config.Debug then
         print("^0[^1DEBUG^0] ^5Selecting an item based on configured probabilities...")
     end
     if selectedItem then
         local canReceive = true
         if canReceive then
-            xPlayer.addInventoryItem(selectedItem, 1)
+            xPlayer.addInventoryItem(selectedItem, amount)
             if Config.Debug then
-                print("^0[^1DEBUG^0] ^5Player ^3" .. GetPlayerName(source) .. "^5 has collected ^3" .. selectedItem .. "^5.")
+                print("^0[^1DEBUG^0] ^5Player ^3" .. GetPlayerName(source) .. "^5 has collected ^3" .. amount .. " " .. selectedItem .. "^5.")
             end
-            SendDiscordLog("Scrapyard Log", "Player " .. GetPlayerName(source) .. " collected " .. selectedItem .. ".")
+            SendDiscordLog("Scrapyard Log", "Player " .. GetPlayerName(source) .. " collected " .. amount .. "x " .. selectedItem .. ".")
         end
     end
 end)
