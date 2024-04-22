@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'HenkW'
 description 'Simple scrapyard script for collecting items'
-version '0.1.5'
+version '0.1.6'
 
 client_scripts {
     'client/main.lua'
