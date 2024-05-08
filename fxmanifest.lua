@@ -4,7 +4,7 @@ lua54 'yes'
 
 author 'HenkW'
 description 'Simple scrapyard script for collecting items'
-version '0.1.8'
+version '0.1.9'
 
 files {
     'locales/*.json'
