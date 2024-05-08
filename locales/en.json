@@ -1,0 +1,9 @@
+{
+    "collect_scrap": "Press [E] to collect scrap",
+    "searching": "Searching...",
+    "collected": "You have collected some scrap.",
+    "while_searching": "You started searching for scrap.",
+    "abuse": "Emote got canceled due to emote abuse or player walked away!",
+    "failed_check": "Failed skill check.",
+    "start_check": "Starting skill check...",
+}

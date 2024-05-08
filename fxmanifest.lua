@@ -1,9 +1,14 @@
 fx_version 'cerulean'
 game 'gta5'
+lua54 'yes'
 
 author 'HenkW'
 description 'Simple scrapyard script for collecting items'
-version '0.1.7'
+version '0.1.8'
+
+files {
+    'locales/*.json'
+}
 
 client_scripts {
     'client/main.lua'
@@ -18,7 +23,10 @@ shared_scripts {
     'config.lua',
     '@es_extended/locale.lua',
     '@es_extended/imports.lua',
-    'locales/main.lua'
+    '@ox_lib/init.lua'
 }
 
-dependency 'es_extended'
+dependencies {
+    'es_extended',
+    'ox_lib'
+}

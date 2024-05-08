@@ -1,22 +1,50 @@
+lib.locale()
 ESX = exports["es_extended"]:getSharedObject()
-
--- ESX = nil
-
--- Citizen.CreateThread(function()
---     while ESX == nil do
---         TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
---         Citizen.Wait(0)
---     end
--- end)
-
 local searchedLocations = {}
 local isSearching = false
+
+RegisterNetEvent('hw_scrapyard:displayNotification')
+AddEventHandler('hw_scrapyard:displayNotification', function(message, type, position)
+    lib.notify({
+        title = 'Scrapyard Notification',
+        description = message,
+        duration = 3500,
+        type = type or 'inform',
+        position = position or 'top-right'
+    })
+end)
 
 function StartSearchAnimation(time, cb)
     if isSearching then return end
     isSearching = true
     local startPosition = GetEntityCoords(PlayerPedId())
     if Config.Debug then print("^0[^1DEBUG^0] ^5Starting search animation...") end
+
+    lib.notify({
+        title = 'Scrapyard Notification',
+        description = locale('start_check'),
+        type = 'info'
+    })
+
+    local success = lib.skillCheck({'easy', 'easy', {areaSize = 60, speedMultiplier = 1}, 'easy'}, {'w'})
+
+    lib.notify({
+        title = 'Scrapyard Notification',
+        description = locale('while_searching'),
+        type = 'success'
+    })
+
+    if not success then
+        lib.notify({
+            title = 'Scrapyard Notification',
+            description = locale('failed_check'),
+            type = 'error'
+        })
+        if Config.Debug then print("^0[^1DEBUG^0] ^5Skill check failed, search not started.") end
+        isSearching = false
+        return
+    end
+
     TaskStartScenarioInPlace(PlayerPedId(), "CODE_HUMAN_MEDIC_KNEEL", 0, true)
 
     Citizen.CreateThread(function()
@@ -26,7 +54,11 @@ function StartSearchAnimation(time, cb)
             local currentPosition = GetEntityCoords(PlayerPedId())
             if #(startPosition - currentPosition) > 1 then
                 ClearPedTasksImmediately(PlayerPedId())
-                ESX.ShowNotification(_U('abuse'))
+                lib.notify({
+                    title = 'Scrapyard Notification',
+                    description = locale('abuse'),
+                    type = 'error'
+                })
                 if Config.Debug then print("^0[^1DEBUG^0] ^5Search cancelled, player moved.") end
                 isSearching = false
                 return
@@ -40,18 +72,24 @@ function StartSearchAnimation(time, cb)
     end)
 end
 
+
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
+        lib.hideTextUI()
         local playerCoords = GetEntityCoords(PlayerPedId())
         for i, scrapLoc in ipairs(Config.ScrapLocations) do
             if not searchedLocations[i] and Vdist(playerCoords.x, playerCoords.y, playerCoords.z, scrapLoc.x, scrapLoc.y, scrapLoc.z) < 2 then
-                ESX.ShowHelpNotification(_U('collect_scrap'))
+                lib.showTextUI(locale('collect_scrap'))
                 if IsControlJustReleased(0, 38) then
-                    ESX.ShowNotification(_U('while_searching'))
+                    lib.showTextUI(locale('while_searching'))
                     StartSearchAnimation(Config.SearchTime, function()
                         TriggerServerEvent('hw_scrapyard:collectScrap', i)
-                        ESX.ShowNotification(_U('collected'))
+                        lib.notify({
+                            title = 'Scrapyard Notifcation',
+                            description = locale('collected'),
+                            type = 'success'
+                        })
                         searchedLocations[i] = true 
                         if Config.Debug then
                             print("^0[^1DEBUG^0] ^5Location ^3" .. i .. "^5 has been searched.")

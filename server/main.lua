@@ -1,8 +1,5 @@
 ESX = exports["es_extended"]:getSharedObject()
-
--- ESX = nil
-
--- TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+local searchedLocations = {}
 
 function SendDiscordLog(username, content, color)
     local discordWebhook = Config.DiscordWebhook
@@ -20,7 +17,9 @@ function SendDiscordLog(username, content, color)
     PerformHttpRequest(discordWebhook, function(err, text, headers) end, 'POST', json.encode({username = username, embeds = embeds}), { ['Content-Type'] = 'application/json' })
 end
 
-local searchedLocations = {}
+local function sendNotification(playerId, message, type, position)
+    TriggerClientEvent('hw_scrapyard:displayNotification', playerId, message, type, position)
+end
 
 function SelectItem()
     local rnd = math.random(1, 100)
