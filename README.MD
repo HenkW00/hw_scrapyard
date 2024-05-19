@@ -11,6 +11,9 @@
 - **Discord Logging**: Supports Discord webhooks for logging player actions.
 - **Multilingual Support**: Easy localization through the `locales` directory.
 
+## Preview
+- https://youtu.be/w_19AnAyhZw
+
 ## Installation
 
 1. **Download the Resource**:
